@@ -1,11 +1,11 @@
 import type { NextPage } from 'next';
 
-const Home: NextPage = () => {
+const Tags: NextPage = () => {
     return (
         <div>
-            <h1>首页</h1>
+            <h1>标签页</h1>
         </div>
     );
 };
 
-export default Home;
+export default Tags;

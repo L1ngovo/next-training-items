@@ -1,40 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+#### 1 项目创建
 
-## Getting Started
+- ```
+  npx create-next-app@latest --typescript
+  ```
 
-First, run the development server:
+#### 2 格式化工具配置
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Eslint
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+  > 查找、修复代码问题
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+  1） 下载VSCode插件
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+  2） 安装依赖
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+  3） 配置文件 .eslintrc.json
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+  ```
+  {
+      "extends": [ "next/core-web-vitals", 		"eslint:recommended" ]
+  }
+  ```
 
-## Learn More
+- Stylelint
 
-To learn more about Next.js, take a look at the following resources:
+  > 检查、修复CSS代码问题
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+  1） 下载VSCode插件
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  2） 安装依赖
 
-## Deploy on Vercel
+  3） 配置文件 .stylelintrc.json
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  ```
+  {
+      "extends": "stylelint-config-standard-scss"
+  }
+  ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- prettier
+
+  > 统一代码风格
+
+  1） 下载vscode插件
+
+  2） 配置文件 .prettierrc
+
+  ```json
+  {
+      "arrowParens": "always",
+       // 箭头函数的参数始终带括号
+      "bracketSpacing": true ,
+      // 在对象的花括号和内容之间添加空格
+      "endOfLine": "lf",
+      // 换行符使用 LF（\n）
+      "htmlWhitespaceSensitivity": "css",
+      // HTML 中的空白敏感度遵循 CSS 的规则
+      "insertPragma": false,
+      // 不自动插入格式化指令
+      "jsxBracketSameLine": false,
+      // 多行 JSX 元素的 > 放在最后一行的末尾
+      "jsxSingleQuote": false,
+      // JSX 属性使用双引号
+      "printWidth": 80,
+      // 每行代码的最大长度为 80 个字符
+      "proseWrap": "preserve",
+      // 文本换行遵循原始文本的换行方式。
+      "quoteProps": "as-needed",
+      // 对象属性只在必要时使用引号。
+      "requirePragma": false,
+      // 不要求文件顶部有格式化指令。
+      "semi": true,
+      // 语句末尾加分号
+      "singleQuote": true,
+      // 使用单引号
+      "tabWidth": 4,
+      // 一个 Tab 键等于 4 个空格
+      "trailingComma": "es5",
+      // 在 ES5 中有效的尾随逗号（如对象和数组）
+      "useTabs": false,
+      // 使用空格而不是 Tab 键进行缩进
+      "vueIndentScriptAndStyle": false,
+      // Vue 文件中的 <script> 和 <style> 标签不缩进
+      "parser": "babel"
+      // 使用 Babel 解析器
+  ```
+
+
+
+#### 3 路由配置
+
+- 在next中，路由路径由pages文件目录下的文件包名决定
+  - 即 pages/index.tsx  决定了路径为 / 的展示内容
+  - pages/tag/index.tsx 决定了路径 /tag 的展示内容
+  - pages/blog/first-post.tsx 路径为 /blog/first-post
+

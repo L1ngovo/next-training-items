@@ -1,0 +1,29 @@
+.navbar {
+    background-color: #ffffff;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+
+    .logo {
+        font-weight: bold;
+        font-size: 30px;
+    }
+
+    .links {
+        a {
+            color: #424242;
+            margin-right: 10px;
+        }
+        .active {
+            color: #1090cf;
+        }
+    }
+
+    .options {
+        button {
+            margin-right: 10px;
+        }
+    }
+}

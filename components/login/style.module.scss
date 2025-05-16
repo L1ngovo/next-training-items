@@ -1,0 +1,91 @@
+.loginArea {
+    background-color: rgba($color: #000000, $alpha: 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    .loginHeader {
+        font-size: 20px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .closeBtn {
+            color: #797979;
+            cursor: pointer;
+        }
+    }
+
+    .loginContainer {
+        background-color: #fff;
+        width: 350px;
+        height: 300px;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        border-radius: 10px;
+
+        input {
+            width: 100%;
+            height: 37px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #a0a0a0;
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box; 
+        }
+
+        input:focus {
+            border: 1px solid #1090cf;
+        }
+
+
+        .loginCode {
+            position: relative;
+            
+            .getCode {
+                position: absolute;
+                color: #1090cf;
+                right: 15px;
+                top: 8px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+        }
+        
+    }
+
+    .loginBtn {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 5px;
+        margin-top: 15px;
+        background-color: #046899;
+        color: #fff;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .loginOther {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #1090cf;
+        cursor: pointer;
+    }
+
+    .loginPolicy {
+        margin-top: 15px;
+        color: #333;
+        font-size: 14px;
+        a {
+            color: #1090cf;
+        }
+    }
+}

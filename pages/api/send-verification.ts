@@ -16,27 +16,32 @@ export default async function handler(
   const { phone } = req.body as RequestBody;
 
   try {
-    // 生产环境逻辑（示例）
     if (process.env.NODE_ENV === 'production') {
-      // 这里添加真实短信服务调用
+      // 生产环境接入真实短信服务
       return res.status(200).json({ success: true });
     }
 
     const code = smsMock.send(phone);
     
-    const response: {
-      success: boolean;
-      debugCode?: number;
-    } = { success: true };
-
-    if (process.env.NODE_ENV === 'development') {
-      response.debugCode = code;
-    }
+    const response = {
+      success: true,
+      debugCode: process.env.NODE_ENV === 'development' ? code : undefined
+    };
 
     res.status(200).json(response);
-
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : '未知错误';
-    res.status(500).json({ error: message });
+    if (error instanceof Error) {
+      if (error.message.includes('过于频繁')) {
+        return res.status(429).json({
+          code: 'TOO_MANY_REQUESTS',
+          error: error.message
+        });
+      }
+      return res.status(400).json({
+        code: 'BAD_REQUEST',
+        error: error.message
+      });
+    }
+    res.status(500).json({ code: 'INTERNAL_ERROR', error: '未知错误' });
   }
 }

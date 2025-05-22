@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Props {
 	phone: string;
@@ -7,23 +7,42 @@ interface Props {
 
 export default function SendCodeButton({ phone, onSuccess }: Props) {
 	const [loading, setLoading] = useState(false);
+	const [cooldown, setCooldown] = useState(0);
+
+	useEffect(() => {
+		if (cooldown > 0) {
+			const timer = setInterval(() => {
+				setCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+			}, 1000);
+			return () => clearInterval(timer);
+		}
+	}, [cooldown]);
 
 	const handleSend = async () => {
+		if (cooldown > 0) return;
+
 		setLoading(true);
 		try {
-			const res = await fetch('/api/send-verification', {
+			const response = await fetch('/api/send-verification', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ phone }),
 			});
 
-			const data = await res.json();
+			const data = await response.json();
 
-			if (process.env.NODE_ENV === 'development' && data.debugCode) {
-				alert(`开发模式验证码：${data.debugCode}`);
+			if (!response.ok) {
+				throw new Error(data.error || '发送失败');
 			}
 
+			setCooldown(10);
 			onSuccess?.();
+
+			if (process.env.NODE_ENV === 'development' && data.debugCode) {
+				alert(`[开发模式] 验证码：${data.debugCode}`);
+			}
+		} catch (error) {
+			alert(error instanceof Error ? error.message : '请求异常');
 		} finally {
 			setLoading(false);
 		}
@@ -32,10 +51,14 @@ export default function SendCodeButton({ phone, onSuccess }: Props) {
 	return (
 		<button
 			onClick={handleSend}
-			disabled={loading}
-			className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+			disabled={loading || cooldown > 0}
+			className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
 		>
-			{loading ? '发送中...' : '获取验证码'}
+			{cooldown > 0
+				? `${cooldown}秒后重试`
+				: loading
+				? '发送中...'
+				: '获取验证码'}
 		</button>
 	);
 }

@@ -16,12 +16,15 @@ export default function handler(
 
   const { phone, code } = req.body as RequestBody;
   
-  const isValid = smsMock.verify(phone, code);
-  
-  if (isValid) {
-    smsMock.cleanup();
-    res.status(200).json({ success: true });
-  } else {
-    res.status(401).json({ error: '验证码无效或已过期' });
+  try {
+    const isValid = smsMock.verify(phone, code);
+    
+    if (isValid) {
+      smsMock.cleanup();
+      return res.status(200).json({ success: true });
+    }
+    return res.status(401).json({ error: '验证码无效或已过期' });
+  } catch (error) {
+    res.status(500).json({ error: '验证服务不可用' });
   }
 }

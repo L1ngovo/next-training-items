@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import style from './style.module.scss';
-import CountDown from '../countDown';
+import CountDown from '../countdown';
+import { message } from 'antd';
 
 interface LoginProps {
 	isShow: boolean;
@@ -26,7 +27,25 @@ const Login = (props: LoginProps) => {
 		setHasVerifyCode(false);
 	};
 
-	const handleLogin = () => {};
+	const handleLogin = async () => {
+		try {
+			const res = await fetch('api/users', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(form.phoneNum),
+			});
+			const result = await res.json();
+			if (res.ok) {
+				message.success('登录成功');
+			} else {
+				message.error(result.message);
+			}
+		} catch (error) {
+			message.error('登录失败');
+		}
+	};
 
 	const handleOtherLogin = () => {};
 

@@ -1,6 +1,6 @@
+// lib/mongodb.ts
 import { MongoClient, MongoClientOptions } from 'mongodb';
 
-// 扩展全局类型声明
 declare global {
   namespace NodeJS {
     interface Global {
@@ -9,34 +9,37 @@ declare global {
   }
 }
 
-const uri = process.env.MONGODB_URI;
-const options: MongoClientOptions = {
-  // 注意：新版本驱动已自动处理下列选项，可以省略
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true,
-  maxPoolSize: 10,  // 连接池大小
-  socketTimeoutMS: 45000, // 套接字超时
-};
+// 硬编码数据库名称或从环境变量读取
+const DB_NAME = process.env.MONGODB_DBNAME || 'BlogData';
 
-if (!uri) {
-  throw new Error('请添加 MONGODB_URI 到环境变量');
-}
+const uri = process.env.MONGODB_URI;
+if (!uri) throw new Error('MONGODB_URI 未配置');
+
+const options: MongoClientOptions = {
+  maxPoolSize: 10,
+  socketTimeoutMS: 30000,
+  appName: 'NextJS_Blog', // 便于在 MongoDB 日志中识别
+};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
+
 if (typeof window !== 'undefined') {
-  throw new Error('❌ MongoDB 连接工具只能在服务端使用');
+  throw new Error('MongoDB 客户端不能在浏览器端使用');
 }
 
 if (process.env.NODE_ENV === 'development') {
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
-    
-    // 添加连接成功提示
-    global._mongoClientPromise
-      .then(() => console.log('✅ MongoDB 连接成功'))
-      .catch(err => console.error('❌ MongoDB 连接失败:', err));
+    global._mongoClientPromise = client.connect()
+      .then(connectedClient => {
+        console.log(`📡 开发环境连接到数据库: ${DB_NAME}`);
+        return connectedClient;
+      })
+      .catch(err => {
+        console.error('连接失败:', err);
+        process.exit(1);
+      });
   }
   clientPromise = global._mongoClientPromise;
 } else {
@@ -44,15 +47,17 @@ if (process.env.NODE_ENV === 'development') {
   clientPromise = client.connect();
 }
 
-// 导出类型安全的连接
 export const connectToDatabase = async () => {
   const client = await clientPromise;
-  return { client, db: client.db() };
-};
+  const db = client.db(DB_NAME);
 
-// 初始化检查（仅开发环境）
-if (process.env.NODE_ENV === 'development') {
-  clientPromise
-    .then(() => console.log('📦 MongoDB 连接已就绪'))
-    .catch(err => console.error('⚠️ MongoDB 初始化错误:', err));
-}
+  // 心跳检测验证连接
+  try {
+    await db.command({ ping: 1 });
+  } catch (err) {
+    console.error('数据库心跳检测失败:', err);
+    throw new Error('数据库连接异常');
+  }
+
+  return { client, db };
+};

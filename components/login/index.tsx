@@ -47,7 +47,22 @@ const Login = (props: LoginProps) => {
 		}
 	};
 
-	const handleOtherLogin = () => {};
+	const handleOtherLogin = async () => {
+		console.log(1111);
+		const id = '5570988546';
+		try {
+			const res = await fetch('api/users/user');
+			console.log(res);
+			// const result = await res.json();
+			// if (res.ok) {
+			// 	message.success('登录成功');
+			// } else {
+			// 	message.error(result.message);
+			// }
+		} catch (error) {
+			message.error('登录失败');
+		}
+	};
 
 	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
